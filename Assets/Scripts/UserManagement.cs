@@ -6,18 +6,6 @@ using UnityEngine;
 
 public class UserManagement : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
     private bool IsValidEmail(string email)
     {
         try
@@ -35,7 +23,7 @@ public class UserManagement : MonoBehaviour
     // check for weak password
     private bool IsWeakPassword(string password)
     {
-        Regex regex = new Regex(@"\d+");
+        Regex regex = new Regex(@"^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$");
 
         // return true if doesn't match regex
         return !regex.IsMatch(password);
@@ -45,9 +33,15 @@ public class UserManagement : MonoBehaviour
     {
         Debug.Log(username + "\n" + password);
 
-        if(!string.IsNullOrEmpty(username) && !string.IsNullOrEmpty(password)) // check empty input
+        // check empty input
+        if (!string.IsNullOrEmpty(username) && !string.IsNullOrEmpty(password))
         {
-            return true;
+            // do some rest api stuff here
+
+            //if success
+                return true;
+            //else
+                //return false
         }
         else
         {
@@ -77,18 +71,34 @@ public class UserManagement : MonoBehaviour
         }
         else
         {
-            //XXXX!!!!PUT USERNAME TAKEN ERROR CHECKING HERE!!!!!XXXX
-            if (!IsValidEmail(email))
+            //=========!!!!PUT USERNAME TAKEN ERROR CHECKING HERE!!!!!========================
+            if (username == "loremipsum") //retrieve using rest api
+            {
+                return 2;
+            }
+            else if (!IsValidEmail(email))
             {
                 return 3;
             }
-            //XXXX!!!!!PUT EMAIL EXIST ERROR CHECKING HERE!!!!!XXXX
+            //========!!!!!PUT EMAIL EXIST ERROR CHECKING HERE!!!!!===========================
+            else if (email == "lorem@ipsum.com") //retrieve using rest api
+            {
+                return 4;
+            }
             else if (IsWeakPassword(password))
             {
                 return 5;
             }
+            else if (password != confirmPassword)
+            {
+                return 6;
+            }
+            else
+            {
+                return 0;
+                // do some rest api here to register
+                // if response success, return 0, else return 7
+            }
         }
-
-        return 7;
     }
 }
