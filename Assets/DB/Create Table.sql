@@ -19,8 +19,8 @@ DROP TABLE Inventory;
 CREATE TABLE Player
 (
 	playerId int NOT NULL AUTO_INCREMENT,
-	username varchar(80) NOT NULL,
-	email varchar(255) NOT NULL,
+	username varchar(80) NOT NULL UNIQUE,
+	email varchar(255) NOT NULL UNIQUE,
 	password varchar(255) NOT NULL,
 	dateRegistered date NOT NULL,
 	xp int DEFAULT 0 NOT NULL,

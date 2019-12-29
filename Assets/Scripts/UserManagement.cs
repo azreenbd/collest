@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Net.Mail;
 using System.Text.RegularExpressions;
+using UnityEngine.Networking;
 using UnityEngine;
+using System.Text;
 
 public class UserManagement : MonoBehaviour
 {
@@ -95,9 +97,37 @@ public class UserManagement : MonoBehaviour
             }
             else
             {
-                return 0;
                 // do some rest api here to register
                 // if response success, return 0, else return 7
+                StartCoroutine(CreateUser(username, email, password));
+
+
+                return 0;
+
+                //TO DO: FIGURE OUT HOW TO GET ERROR WHEN CREATEUSER
+            }
+        }
+    }
+
+    private IEnumerator CreateUser(string username, string email, string password)
+    {
+        WWWForm form = new WWWForm();
+
+        form.AddField("username", username);
+        form.AddField("email", email);
+        form.AddField("password", password);
+
+        using (UnityWebRequest www = UnityWebRequest.Post("http://localhost/testapi/api/create-user.php", form))
+        {
+            yield return www.SendWebRequest();
+
+            if (www.isNetworkError || www.isHttpError)
+            {
+                Debug.Log(www.error);
+            }
+            else
+            {
+                Debug.Log("Form upload complete!");
             }
         }
     }
