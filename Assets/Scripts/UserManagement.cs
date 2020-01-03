@@ -39,15 +39,39 @@ public class UserManagement : MonoBehaviour
         if (!string.IsNullOrEmpty(username) && !string.IsNullOrEmpty(password))
         {
             // do some rest api stuff here
+            StartCoroutine(UserAuth(username, password));
 
             //if success
-                return true;
+            return true;
             //else
                 //return false
         }
         else
         {
             return false;
+        }
+    }
+
+    private IEnumerator UserAuth(string email, string password)
+    {
+        WWWForm form = new WWWForm();
+
+        //form.AddField("username", username);
+        form.AddField("email", email);
+        form.AddField("password", password);
+
+        using (UnityWebRequest www = UnityWebRequest.Post("http://localhost/testapi/api/login.php", form))
+        {
+            yield return www.SendWebRequest();
+
+            if (www.isNetworkError || www.isHttpError)
+            {
+                Debug.Log(www.error);
+            }
+            else
+            {
+                Debug.Log("Login success!");
+            }
         }
     }
 

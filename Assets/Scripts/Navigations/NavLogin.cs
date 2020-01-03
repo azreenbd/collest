@@ -58,6 +58,8 @@ public class NavLogin : MonoBehaviour
         {
             // start game
             Debug.Log("Login success!");
+
+            bool result = userManager.Login(loginUsernameInput.text, loginPasswordInput.text);
         }
         else
         {
