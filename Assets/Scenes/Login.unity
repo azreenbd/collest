@@ -2554,6 +2554,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c7108c2bb80a63a40a0a667e98d79244, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  loginErrorText: {fileID: 1896354219}
+  registerErrorText: {fileID: 226483984}
 --- !u!1 &799452513
 GameObject:
   m_ObjectHideFlags: 0

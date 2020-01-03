@@ -5,9 +5,15 @@ using System.Text.RegularExpressions;
 using UnityEngine.Networking;
 using UnityEngine;
 using System.Text;
+using TMPro;
 
 public class UserManagement : MonoBehaviour
 {
+    private WebToken jwt = new WebToken();
+
+    // variable of Text(TMP) game object
+    public TMP_Text loginErrorText, registerErrorText;
+
     private bool IsValidEmail(string email)
     {
         try
@@ -42,9 +48,15 @@ public class UserManagement : MonoBehaviour
             StartCoroutine(UserAuth(username, password));
 
             //if success
-            return true;
-            //else
-                //return false
+            Debug.Log("error: " + jwt.message);
+            if(jwt.message == "Success")
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
         else
         {
@@ -67,10 +79,19 @@ public class UserManagement : MonoBehaviour
             if (www.isNetworkError || www.isHttpError)
             {
                 Debug.Log(www.error);
+
+                // show error message
+                loginErrorText.gameObject.SetActive(true);
+                loginErrorText.SetText("Incorrect username or password.");
             }
             else
             {
-                Debug.Log("Login success!");
+                jwt = JsonUtility.FromJson<WebToken>(www.downloadHandler.text);
+
+                // deactivate error message if it is active
+                loginErrorText.gameObject.SetActive(false);
+
+                Debug.Log("Mesej: " + jwt.message + "\n" + "token: " + jwt.jwt);
             }
         }
     }

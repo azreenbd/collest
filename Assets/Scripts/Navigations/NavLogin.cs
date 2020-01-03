@@ -53,22 +53,7 @@ public class NavLogin : MonoBehaviour
     // -- checking credentials --
     public void LoginClick()
     {
-        // process user login
-        if(userManager.Login(loginUsernameInput.text, loginPasswordInput.text))
-        {
-            // start game
-            Debug.Log("Login success!");
-
-            bool result = userManager.Login(loginUsernameInput.text, loginPasswordInput.text);
-        }
-        else
-        {
-            // display error message
-            Debug.Log("Login failed!");
-
-            loginErrorText.gameObject.SetActive(true);
-            loginErrorText.SetText("Incorrect username or password.");
-        }
+        userManager.Login(loginUsernameInput.text, loginPasswordInput.text);
     }
 
     public void RegisterClick()
