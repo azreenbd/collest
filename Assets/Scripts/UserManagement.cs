@@ -6,10 +6,14 @@ using UnityEngine.Networking;
 using UnityEngine;
 using System.Text;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class UserManagement : MonoBehaviour
 {
     private WebToken jwt = new WebToken();
+
+    // logged in user jwt
+    private static string token;
 
     // variable of Text(TMP) game object
     public TMP_Text loginErrorText, registerErrorText;
@@ -37,6 +41,11 @@ public class UserManagement : MonoBehaviour
         return !regex.IsMatch(password);
     }
 
+    // get logged in user jwt
+    public static string GetToken()
+    {
+        return token;
+    }
     public bool Login(string username, string password)
     {
         Debug.Log(username + "\n" + password);
@@ -92,6 +101,10 @@ public class UserManagement : MonoBehaviour
                 loginErrorText.gameObject.SetActive(false);
 
                 Debug.Log("Mesej: " + jwt.message + "\n" + "token: " + jwt.jwt);
+
+                token = jwt.jwt;
+
+                SceneManager.LoadScene("Lobby");
             }
         }
     }
