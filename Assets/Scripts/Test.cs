@@ -13,14 +13,14 @@ public class Test : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        debug.SetText(UserManagement.GetToken());
-        UpdateUser();
+        //debug.SetText(UserManagement.GetToken());
+        //UpdateUser();
     }
 
     // Update is called once per frame
     void Update()
     {
-        debug.SetText(player.data.id + "\n" + player.data.username + "\n" + player.data.email);
+        //debug.SetText(player.data.id + "\n" + player.data.username + "\n" + player.data.email);
         //Debug.Log("username: "+User.username);
     }
 

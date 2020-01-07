@@ -10,6 +10,7 @@ using UnityEngine.SceneManagement;
 
 public class UserManagement : MonoBehaviour
 {
+    #region Variables Declaration
     private WebToken jwt = new WebToken();
 
     // logged in user jwt
@@ -17,6 +18,7 @@ public class UserManagement : MonoBehaviour
 
     // variable of Text(TMP) game object
     public TMP_Text loginErrorText, registerErrorText;
+    #endregion
 
     private bool IsValidEmail(string email)
     {
@@ -46,6 +48,10 @@ public class UserManagement : MonoBehaviour
     {
         return token;
     }
+    public static void SetToken(string jwt)
+    {
+        token = jwt;
+    }
     public bool Login(string username, string password)
     {
         Debug.Log(username + "\n" + password);
@@ -57,7 +63,6 @@ public class UserManagement : MonoBehaviour
             StartCoroutine(UserAuth(username, password));
 
             //if success
-            Debug.Log("error: " + jwt.message);
             if(jwt.message == "Success")
             {
                 return true;
