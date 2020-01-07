@@ -33,7 +33,7 @@ CREATE TABLE Team
 (
 	groupId int NOT NULL AUTO_INCREMENT,
 	name varchar(80) NOT NULL,
-	creator int NOT NULL,
+	creator int NOT NULL UNIQUE,
 	point int DEFAULT 0 NOT NULL,
 
 	CONSTRAINT team_pk PRIMARY KEY (groupId) 

@@ -18,10 +18,20 @@ use \Firebase\JWT\JWT;
 $data = json_decode(file_get_contents("php://input"));
  
 // get jwt
-$jwt=isset($data->jwt) ? $data->jwt : "";
+// $jwt=isset($data->jwt) ? $data->jwt : "";
+
+if(isset($data->jwt)) {
+	$jwt = $data->jwt;
+}
+else if(isset($_POST["jwt"])) {
+	$jwt = $_POST["jwt"];
+}
+else {
+	$jwt = "";
+}
  
 // if jwt is not empty
-if($jwt){
+if($jwt) {
  
     // if decode succeed, show user details
     try {
@@ -54,7 +64,7 @@ if($jwt){
 }
  
 // show error message if jwt is empty
-else{
+else {
  
     // set response code
     http_response_code(401);

@@ -23,12 +23,12 @@ $password;
 
 // if empty, try getting from webform instead
 if (!empty($data)) {
-	$user->email = $data->email;
-    $password = $data->password;
+  $user->email = $data->email;
+  $password = $data->password;
 }
 elseif (!empty($_POST)) {
-	$user->email = $_POST["email"];
-    $password = $_POST["password"];
+  $user->email = $_POST["email"];
+  $password = $_POST["password"];
 }
 
 // check if email exists
@@ -53,7 +53,10 @@ if($email_exists && password_verify($password, $user->password)){
        "data" => array(
            "id" => $user->id,
            "username" => $user->username,
-           "email" => $user->email
+           "email" => $user->email,
+           "date" => $user->date,
+           "xp" => $user->xp,
+           "group" => $user->group
        )
     );
  
@@ -64,7 +67,7 @@ if($email_exists && password_verify($password, $user->password)){
     $jwt = JWT::encode($token, $key);
     echo json_encode(
             array(
-                "message" => "Successful login.",
+                "message" => "Success",
                 "jwt" => $jwt
             )
         );
@@ -78,6 +81,6 @@ else{
     http_response_code(401);
  
     // tell the user login failed
-    echo json_encode(array("message" => "Login failed."));
+    echo json_encode(array("message" => "Failed"));
 }
 ?>

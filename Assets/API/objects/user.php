@@ -19,6 +19,8 @@ class User{
     public $email;
     public $password;
     public $date;
+    public $xp;
+    public $group;
  
     // constructor
     public function __construct($db){
@@ -40,9 +42,9 @@ class User{
         $stmt = $this->conn->prepare($query);
      
         // sanitize
-        $this->username=htmlspecialchars(strip_tags($this->username));
-        $this->email=htmlspecialchars(strip_tags($this->email));
-        $this->password=htmlspecialchars(strip_tags($this->password));
+        $this->username = htmlspecialchars(strip_tags($this->username));
+        $this->email = htmlspecialchars(strip_tags($this->email));
+        $this->password = htmlspecialchars(strip_tags($this->password));
      
         // bind the values
         $stmt->bindParam(':username', $this->username);
@@ -67,10 +69,10 @@ class User{
     }
      
     // check if given email exist in the database
-	function emailExists(){
+	function emailExists() {
 	 
 	    // query to check if email exists
-	    $query = "SELECT playerId, username, password
+	    $query = "SELECT *
 	            FROM " . $this->table_name . "
 	            WHERE email = ?
 	            LIMIT 0,1";
@@ -100,6 +102,9 @@ class User{
 	        $this->id = $row['playerId'];
 	        $this->username = $row['username'];
 	        $this->password = $row['password'];
+            $this->date = $row['dateRegistered'];
+            $this->xp = $row['xp'];
+            $this->group = $row['groupId'];
 	 
 	        // return true because email exists in the database
 	        return true;
@@ -108,6 +113,68 @@ class User{
 	    // return false if email does not exist in the database
 	    return false;
 	}
-	 
-	// update() method will be here
+
+    function joinGroup() {
+        // insert query
+        $query = "UPDATE " . $this->table_name . " 
+                SET groupId = :group 
+                WHERE playerId = :id";
+     
+        // prepare the query
+        $stmt = $this->conn->prepare($query);
+     
+        // sanitize
+        $this->id = htmlspecialchars(strip_tags($this->id));
+        $this->group = htmlspecialchars(strip_tags($this->group));
+     
+        // bind the values
+        $stmt->bindParam(':id', $this->id);
+        $stmt->bindParam(':group', $this->group);
+     
+        // execute the query, also check if query was successful
+        if($stmt->execute()){
+            return true;
+        }
+     
+        return false;
+    }
+
+    function groupExists() {
+        $query = "SELECT groupId
+                FROM " . $this->table_name . "
+                WHERE playerId = ?
+                LIMIT 0,1";
+     
+        // prepare the query
+        $stmt = $this->conn->prepare( $query );
+     
+        // sanitize
+        $this->id=htmlspecialchars(strip_tags($this->id));
+     
+        // bind given email value
+        $stmt->bindParam(1, $this->id);
+     
+        // execute the query
+        $stmt->execute();
+     
+        // get number of rows
+        $num = $stmt->rowCount();
+     
+        // if email exists, assign values to object properties for easy access and use for php sessions
+        if($num>0){
+     
+            // get record details / values
+            $row = $stmt->fetch(PDO::FETCH_ASSOC);
+            
+            // if group is not empty or null
+            if(!empty($row['groupId'])) {
+                $this->group = $row['groupId'];
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
+        return false;
+    }
 }
