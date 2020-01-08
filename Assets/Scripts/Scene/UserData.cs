@@ -10,6 +10,9 @@ public class UserData : MonoBehaviour
     //REMOVE THIS LATER, FRO DEBUGGING ONLY
     public TMP_Text debug;
 
+    public string id, username, email, date, group;
+    public int xp;
+
     // is data assigned?
     bool isAvailable = false;
 
@@ -47,9 +50,10 @@ public class UserData : MonoBehaviour
             RefreshUser();
             GetUser();
 
-            Debug.Log(this.jwt);
+            //Debug.Log(this.jwt);
         }
 
+        // if data is assigned
         if (isAvailable)
         {
             // show user data
@@ -59,6 +63,14 @@ public class UserData : MonoBehaviour
                         + "\ndate:" + user.data.date
                         + "\nxp:" + user.data.xp
                         + "\ngroup:" + user.data.group);
+
+            // assign data
+            id = user.data.id;
+            username = user.data.username;
+            email = user.data.email;
+            date = user.data.date;
+            xp = user.data.xp;
+            group = user.data.group;
         }
     }
     void RefreshUser()

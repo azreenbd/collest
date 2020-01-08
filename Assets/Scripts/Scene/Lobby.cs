@@ -9,6 +9,8 @@ public class Lobby : MonoBehaviour
 {
     string jwt = UserManagement.GetToken();
 
+    public GameObject groupSidebar;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -19,6 +21,7 @@ public class Lobby : MonoBehaviour
             SceneManager.LoadScene("Login");
         }
 
+        groupSidebar.gameObject.SetActive(false);
 
 
         // DO hide hidden GUI element when scene is launch!!

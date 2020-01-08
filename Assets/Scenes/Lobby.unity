@@ -917,7 +917,7 @@ RectTransform:
   - {fileID: 1743713393}
   - {fileID: 1034007745}
   m_Father: {fileID: 1469372586}
-  m_RootOrder: 2
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
@@ -1965,7 +1965,7 @@ RectTransform:
   - {fileID: 687699978}
   - {fileID: 1619993096}
   m_Father: {fileID: 1469372586}
-  m_RootOrder: 0
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
@@ -2346,7 +2346,7 @@ RectTransform:
   - {fileID: 1032966454}
   - {fileID: 130037401}
   m_Father: {fileID: 1469372586}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
@@ -3555,7 +3555,18 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 972928985}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1156146699}
+        m_MethodName: showGroupClick
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &972928985
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3941,6 +3952,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1156146698}
+  - component: {fileID: 1156146699}
   m_Layer: 5
   m_Name: Sidebar
   m_TagString: Untagged
@@ -3969,6 +3981,24 @@ RectTransform:
   m_AnchoredPosition: {x: -131.9, y: -211.5}
   m_SizeDelta: {x: 263.8, y: 423}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1156146699
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1156146697}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ba9dcd52b3a268f44a40316df4dfda99, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  user: {fileID: 1699831083}
+  panelGroup: {fileID: 1469372585}
+  panelQuest: {fileID: 0}
+  panelInventory: {fileID: 0}
+  panelNoGroup: {fileID: 651329656}
+  panelHasGroup: {fileID: 651446272}
 --- !u!1 &1156765524
 GameObject:
   m_ObjectHideFlags: 0
@@ -4898,9 +4928,9 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 651446273}
   - {fileID: 749336431}
   - {fileID: 377401249}
+  - {fileID: 651446273}
   - {fileID: 651329657}
   m_Father: {fileID: 1156146698}
   m_RootOrder: 1
@@ -4922,10 +4952,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a7b0657d5ad9ac348b644b61a6d9007e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  user: {fileID: 1699831083}
   panelGroup: {fileID: 651446272}
   panelCreateGroup: {fileID: 377401248}
   panelEditGroup: {fileID: 749336430}
   panelNoGroup: {fileID: 651329656}
+  groupNameCreate: {fileID: 2084353928}
+  groupNameEdit: {fileID: 1502569242}
 --- !u!114 &1469372588
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5841,6 +5874,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 110350afa4b0c4d4c835548d5be52b78, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  groupSidebar: {fileID: 1469372585}
 --- !u!114 &1699831083
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5854,6 +5888,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   debug: {fileID: 1193359001}
+  id: 
+  username: 
+  email: 
+  date: 
+  group: 
+  xp: 0
 --- !u!1 &1702659068
 GameObject:
   m_ObjectHideFlags: 0

@@ -7,17 +7,38 @@ public class NavSidebarGroup : MonoBehaviour
 {
     GroupManagement groupManager;
 
+    public UserData user;
     public GameObject panelGroup, panelCreateGroup, panelEditGroup, panelNoGroup;
+
+    public TMP_InputField groupNameCreate, groupNameEdit;
+
+    private bool hasGroup = false;
 
     // Start is called before the first frame update
     void Start()
     {
         groupManager = GetComponent<GroupManagement>();
 
-        panelCreateGroup.gameObject.SetActive(false);
-        panelEditGroup.gameObject.SetActive(false);
-        panelGroup.gameObject.SetActive(false);
-        panelNoGroup.gameObject.SetActive(true);
+    }
+
+    // can remove later, cause group are not suppose to appear on start, so UserData have time to assign data
+    void Update()
+    {
+        /*Debug.Log(user.group);
+        if (string.IsNullOrEmpty(user.group) || user.group == "")
+        {
+            panelCreateGroup.gameObject.SetActive(false);
+            panelEditGroup.gameObject.SetActive(false);
+            panelGroup.gameObject.SetActive(false);
+            panelNoGroup.gameObject.SetActive(true);
+        }
+        else
+        {
+            panelCreateGroup.gameObject.SetActive(false);
+            panelEditGroup.gameObject.SetActive(false);
+            panelGroup.gameObject.SetActive(true);
+            panelNoGroup.gameObject.SetActive(false);
+        }*/
     }
 
     public void CreateGroupClick()
@@ -31,7 +52,7 @@ public class NavSidebarGroup : MonoBehaviour
     public void ConfirmCreateGroupClick()
     {
         // DO web api here, if response OK, display group panel
-        groupManager.CreateGroup("NameName");
+        groupManager.Create(groupNameCreate.text);
 
         // display panel group
         panelCreateGroup.gameObject.SetActive(false);
@@ -79,7 +100,7 @@ public class NavSidebarGroup : MonoBehaviour
     public void DisbandGroupClick()
     {
         // DO group deletion here!!!
-
+        groupManager.Disband(user.group);
 
 
 
