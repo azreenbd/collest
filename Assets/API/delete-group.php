@@ -1,4 +1,12 @@
 <?php
+/*
+Category: Group
+Description: 
+This API is for user to delete his/her created group. 
+An input of a group id and JSON web token is required.
+This is to make sure only the logged in user has access.
+*/
+
 // required headers
 header("Access-Control-Allow-Origin: http://localhost/testapi/");
 header("Content-Type: application/json; charset=UTF-8");

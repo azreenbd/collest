@@ -114,6 +114,52 @@ class User{
 	    return false;
 	}
 
+    // check if given username exist in the database
+    function usernameExists() {
+     
+        // query to check if email exists
+        $query = "SELECT *
+                FROM " . $this->table_name . "
+                WHERE username = ?
+                LIMIT 0,1";
+     
+        // prepare the query
+        $stmt = $this->conn->prepare( $query );
+     
+        // sanitize
+        $this->username=htmlspecialchars(strip_tags($this->username));
+     
+        // bind given email value
+        $stmt->bindParam(1, $this->username);
+     
+        // execute the query
+        $stmt->execute();
+     
+        // get number of rows
+        $num = $stmt->rowCount();
+     
+        // if email exists, assign values to object properties for easy access and use for php sessions
+        if($num>0){
+     
+            // get record details / values
+            $row = $stmt->fetch(PDO::FETCH_ASSOC);
+     
+            // assign values to object properties
+            $this->id = $row['playerId'];
+            $this->username = $row['username'];
+            $this->password = $row['password'];
+            $this->date = $row['dateRegistered'];
+            $this->xp = $row['xp'];
+            $this->group = $row['groupId'];
+     
+            // return true because email exists in the database
+            return true;
+        }
+     
+        // return false if email does not exist in the database
+        return false;
+    }
+
     function joinGroup() {
         // insert query
         $query = "UPDATE " . $this->table_name . " 
@@ -139,7 +185,7 @@ class User{
         return false;
     }
 
-    function groupExists() {
+    function hasGroup() {
         $query = "SELECT groupId
                 FROM " . $this->table_name . "
                 WHERE playerId = ?

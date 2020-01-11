@@ -1,4 +1,10 @@
 <?php
+/*
+Category: User
+Description: 
+This API is for creating new user.
+*/
+
 // required headers
 header("Access-Control-Allow-Origin: http://localhost/testapi/");
 header("Content-Type: application/json; charset=UTF-8");

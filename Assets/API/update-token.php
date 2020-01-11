@@ -1,4 +1,11 @@
 <?php
+/*
+Category: User
+Description: 
+This will recreate user JSON web token.
+To be use when user data are updated or changed.
+*/
+
 // required headers
 header("Access-Control-Allow-Origin: http://localhost/testapi/");
 header("Content-Type: application/json; charset=UTF-8");
@@ -17,6 +24,7 @@ use \Firebase\JWT\JWT;
 // files needed to connect to database
 include_once 'config/database.php';
 include_once 'objects/user.php';
+include_once 'objects/group.php';
 
 // get database connection
 $database = new Database();
@@ -24,6 +32,7 @@ $db = $database->getConnection();
  
 // instantiate user object
 $user = new User($db);
+$group = new Group($db);
  
 // get posted data
 $data = json_decode(file_get_contents("php://input"));
@@ -50,37 +59,62 @@ if($jwt) {
         $decoded = JWT::decode($jwt, $key, array('HS256'));
 
         $email = $decoded->data->email;
-
         $user->email = $email;
 
-        if(!empty($email) && $user->emailExists()) {
+        if($user->emailExists()) {
+
+          $group->id = $user->group;
+
+          if($group->setGroup()) {
             $token = array(
-               "iss" => $iss,
-               "aud" => $aud,
-               "iat" => $iat,
-               "nbf" => $nbf,
-               "data" => array(
-                   "id" => $user->id,
-                   "username" => $user->username,
-                   "email" => $user->email,
-                   "date" => $user->date,
-                   "xp" => $user->xp,
-                   "group" => $user->group
+              "iss" => $iss,
+              "aud" => $aud,
+              "iat" => $iat,
+              "nbf" => $nbf,
+              "data" => array(
+                  "id" => $user->id,
+                  "username" => $user->username,
+                  "email" => $user->email,
+                  "date" => $user->date,
+                  "xp" => $user->xp,
+                  "group" => array(
+                      "id" => $group->id,
+                      "name" => $group->name,
+                      "creator" => $group->creator,
+                      "point" => $group->point
+                   )
                )
             );
-         
-            // set response code
-            http_response_code(200);
-         
-            // generate jwt
-            $newJwt = JWT::encode($token, $key);
-            echo json_encode(
-                    array(
-                        "message" => "Success",
-                        "jwt" => $newJwt
-                    )
-                );
+          }
+          else {
+            $token = array(
+              "iss" => $iss,
+              "aud" => $aud,
+              "iat" => $iat,
+              "nbf" => $nbf,
+              "data" => array(
+                  "id" => $user->id,
+                  "username" => $user->username,
+                  "email" => $user->email,
+                  "date" => $user->date,
+                  "xp" => $user->xp,
+                  "group" => NULL
+               )
+            );
+          }
         }
+
+        // set response code
+        http_response_code(200);
+     
+        // generate jwt
+        $newJwt = JWT::encode($token, $key);
+        echo json_encode(
+                array(
+                    "message" => "Success",
+                    "jwt" => $newJwt
+                )
+            );
  
     }
     catch (Exception $e){ // if decode fails, it means jwt is invalid

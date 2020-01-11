@@ -10,13 +10,15 @@ public class UserData : MonoBehaviour
     //REMOVE THIS LATER, FRO DEBUGGING ONLY
     public TMP_Text debug;
 
-    public string id, username, email, date, group;
-    public int xp;
+    /*public string id, username, email, date, group;
+    public int xp;*/
+
+    public User user;
 
     // is data assigned?
     bool isAvailable = false;
 
-    ValidateUser user = new ValidateUser();
+    ValidateUser response = new ValidateUser();
     private WebToken newToken = new WebToken();
     string jwt = UserManagement.GetToken();
 
@@ -56,21 +58,23 @@ public class UserData : MonoBehaviour
         // if data is assigned
         if (isAvailable)
         {
+            user = response.data;
+
             // show user data
-            debug.SetText("id: " + user.data.id
-                        + "\nun:" + user.data.username
-                        + "\nemail:" + user.data.email
-                        + "\ndate:" + user.data.date
-                        + "\nxp:" + user.data.xp
-                        + "\ngroup:" + user.data.group);
+            debug.SetText("id: " + user.id
+                        + "\nun:" + user.username
+                        + "\nemail:" + user.email
+                        + "\ndate:" + user.date
+                        + "\nxp:" + user.xp
+                        + "\ngroup:" + user.group.name);
 
             // assign data
-            id = user.data.id;
+            /*id = user.data.id;
             username = user.data.username;
             email = user.data.email;
             date = user.data.date;
             xp = user.data.xp;
-            group = user.data.group;
+            group = user.data.group.id;*/
         }
     }
     void RefreshUser()
@@ -125,7 +129,7 @@ public class UserData : MonoBehaviour
             else
             {
                 // assign all user data
-                user = JsonUtility.FromJson<ValidateUser>(www.downloadHandler.text);
+                response = JsonUtility.FromJson<ValidateUser>(www.downloadHandler.text);
 
                 isAvailable = true;
             }

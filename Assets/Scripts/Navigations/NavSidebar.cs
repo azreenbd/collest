@@ -4,10 +4,10 @@ using UnityEngine;
 
 public class NavSidebar : MonoBehaviour
 {
-    public UserData user;
+    public UserData userData;
 
     public GameObject panelGroup, panelQuest, panelInventory;
-    public GameObject panelNoGroup, panelHasGroup;
+    public GameObject panelNoGroup, panelHasGroup, panelSubGroup;
 
     // Start is called before the first frame update
     void Start()
@@ -18,15 +18,17 @@ public class NavSidebar : MonoBehaviour
     public void showGroupClick()
     {
         panelGroup.gameObject.SetActive(true);
-        if (string.IsNullOrEmpty(user.group))
+        if (string.IsNullOrEmpty(userData.user.group.id))
         {
             panelNoGroup.gameObject.SetActive(true);
             panelHasGroup.gameObject.SetActive(false);
+            panelSubGroup.gameObject.SetActive(false);
         }
         else
         {
             panelNoGroup.gameObject.SetActive(false);
             panelHasGroup.gameObject.SetActive(true);
+            panelSubGroup.gameObject.SetActive(false);
         }
     }
 

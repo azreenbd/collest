@@ -2,8 +2,8 @@
 /*
 Category: Group
 Description: 
-This API is for user to create a group. 
-An input of a group name and JSON web token is required.
+This API is for user to join group. 
+An input of a group id and JSON web token is required.
 This is to make sure only the logged in user has access.
 */
 
@@ -33,19 +33,18 @@ $db = $database->getConnection();
  
 // instantiate product object
 $group = new Group($db);
-$user = new User($db);
+$userId;
  
 // get posted data
 $data = json_decode(file_get_contents("php://input"));
 
 // if empty, try getting from webform instead
 if (!empty($data)) {
-    // set product property values
-    $group->name = $data->name;
+    $group->id = $data->id;
     $jwt = $data->jwt;
 }
-elseif (!empty($_POST["name"]) && !empty($_POST["jwt"])) {
-    $group->name = $_POST["name"];
+elseif (!empty($_POST["id"]) && !empty($_POST["jwt"])) {
+    $group->id = $_POST["id"];
     $jwt = $_POST["jwt"];
 }
 else {
@@ -59,33 +58,15 @@ if($jwt) {
         // decode jwt
         $decoded = JWT::decode($jwt, $key, array('HS256'));
 
-        // to use with $user->hasGroup() and $group->create()
-        $user->id = $decoded->data->id;
-        $group->creator = $decoded->data->id;
+        // to use with and $group->join()
+        $userId = $decoded->data->id;
 
         // check if user have group
-        if(!$user->hasGroup() && $group->create()) {
+        if($group->join($userId)) {
 
-            if($group->creatorExists()) {
-
-                $user->group = $group->id;
-
-                if($user->joinGroup()) {
-                    http_response_code(200);
-                    echo json_encode(array("message" => "Group created."));
-                }
-                else {
-                    // if the creator unable to join his own group, delete it
-                    $group->delete();
-
-                    http_response_code(401);
-                    echo json_encode(array("message" => "Access denied."));
-                }
-            }
-            else {
-                http_response_code(401);
-                echo json_encode(array("message" => "Access denied."));
-            }
+            http_response_code(200);
+            echo json_encode(array("message" => "Group Joined."));
+                
         }
         else {
             http_response_code(401);

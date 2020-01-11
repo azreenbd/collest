@@ -1,4 +1,10 @@
 <?php
+/*
+Category: User
+Description: 
+Extract user data from JSON web token.
+*/
+
 // required headers
 header("Access-Control-Allow-Origin: http://localhost/testapi/");
 header("Content-Type: application/json; charset=UTF-8");

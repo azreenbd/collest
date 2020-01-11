@@ -8,6 +8,5 @@ public class User
     public string email;
     public string date;
     public int xp;
-    public string group;
-    //public static string xp;
+    public Group group;
 }

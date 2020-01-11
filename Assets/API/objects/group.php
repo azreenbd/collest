@@ -17,6 +17,48 @@ class Group{
         $this->conn = $db;
     }
 
+    function setGroup() {
+        // query to check if email exists
+        $query = "SELECT *
+                FROM " . $this->table_name . "
+                WHERE groupId = ?
+                LIMIT 0,1";
+     
+        // prepare the query
+        $stmt = $this->conn->prepare( $query );
+     
+        // sanitize
+        $this->id=htmlspecialchars(strip_tags($this->id));
+     
+        // bind given email value
+        $stmt->bindParam(1, $this->id);
+     
+        // execute the query
+        $stmt->execute();
+     
+        // get number of rows
+        $num = $stmt->rowCount();
+     
+        // if email exists, assign values to object properties for easy access and use for php sessions
+        if($num>0){
+     
+            // get record details / values
+            $row = $stmt->fetch(PDO::FETCH_ASSOC);
+     
+            // assign values to object properties
+            $this->id = $row['groupId'];
+            $this->name = $row['name'];
+            $this->creator = $row['creator'];
+            $this->point = $row['point'];
+     
+            // return true because email exists in the database
+            return true;
+        }
+     
+        // return false if email does not exist in the database
+        return false;
+    }
+
     function create(){
      
         // insert query
@@ -101,6 +143,31 @@ class Group{
                 }
             }
         }
+        return false;
+    }
+
+    function join($userId) {
+        // insert query
+        $query = "UPDATE player
+                SET groupId = :groupId
+                WHERE playerId = :userId";
+     
+        // prepare the query
+        $stmt = $this->conn->prepare($query);
+     
+        // sanitize
+        $this->id = htmlspecialchars(strip_tags($this->id));
+        $userId = htmlspecialchars(strip_tags($userId));
+     
+        // bind the values
+        $stmt->bindParam(':groupId', $this->id);
+        $stmt->bindParam(':userId', $userId);
+     
+        // execute the query, also check if query was successful
+        if($stmt->execute()){
+            return true;
+        }
+    
         return false;
     }
 
