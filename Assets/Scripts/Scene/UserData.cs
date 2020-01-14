@@ -10,17 +10,21 @@ public class UserData : MonoBehaviour
     //REMOVE THIS LATER, FRO DEBUGGING ONLY
     public TMP_Text debug;
 
-    /*public string id, username, email, date, group;
-    public int xp;*/
-
+    // user data is stored here
     public User user;
 
-    // is data assigned?
+    // is user data assigned?
     bool isAvailable = false;
 
+    // retrive base url from API class
+    private string url = API.url;
+    // retrieve jwt from login
+    string jwt = UserManagement.GetToken();
+
+    // for json response serialization
     ValidateUser response = new ValidateUser();
     private WebToken newToken = new WebToken();
-    string jwt = UserManagement.GetToken();
+    
 
     // Start is called before the first frame update
     void Start()
@@ -28,31 +32,22 @@ public class UserData : MonoBehaviour
         if (!string.IsNullOrEmpty(this.jwt))
         {
             GetUser();
-
-            // show user data
-            /*debug.SetText("id: " + user.data.id
-                        + "\nun:" + user.data.username
-                        + "\nemail:" + user.data.email
-                        + "\ndate:" + user.data.date
-                        + "\nxp:" + user.data.xp
-                        + "\ngroup:" + user.data.group);*/
         }
-            
-
-        // DO hide hidden GUI element when scene is launch!!
     }
 
     // Update is called once per frame
     void Update()
     {
+        // reassign jwt if there is an update
         this.jwt = UserManagement.GetToken();
 
+        // refresh user data to check for real time change
         if (!string.IsNullOrEmpty(this.jwt))
         {
+            // retrieve new jwt
             RefreshUser();
+            // retrieve user data from jwt
             GetUser();
-
-            //Debug.Log(this.jwt);
         }
 
         // if data is assigned
@@ -67,14 +62,6 @@ public class UserData : MonoBehaviour
                         + "\ndate:" + user.date
                         + "\nxp:" + user.xp
                         + "\ngroup:" + user.group.name);
-
-            // assign data
-            /*id = user.data.id;
-            username = user.data.username;
-            email = user.data.email;
-            date = user.data.date;
-            xp = user.data.xp;
-            group = user.data.group.id;*/
         }
     }
     void RefreshUser()
@@ -93,7 +80,7 @@ public class UserData : MonoBehaviour
 
         form.AddField("jwt", jwt);
 
-        using (UnityWebRequest www = UnityWebRequest.Post("http://localhost/testapi/api/update-token.php", form))
+        using (UnityWebRequest www = UnityWebRequest.Post(url + "update-token.php", form))
         {
             yield return www.SendWebRequest();
 
@@ -115,7 +102,7 @@ public class UserData : MonoBehaviour
 
         form.AddField("jwt", token);
 
-        using (UnityWebRequest www = UnityWebRequest.Post("http://localhost/testapi/api/validate-token.php", form))
+        using (UnityWebRequest www = UnityWebRequest.Post(url + "validate-token.php", form))
         {
             yield return www.SendWebRequest();
 

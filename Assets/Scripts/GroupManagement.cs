@@ -5,11 +5,12 @@ using UnityEngine.Networking;
 
 public class GroupManagement : MonoBehaviour
 {
-    // rest api url // maybe put this in one core file?
-    private string url = "http://localhost/testapi/api/";
+    // retrieve base url from API class
+    private string url = API.url;
     private User member = new User();
 
     private string jwt = UserManagement.GetToken();
+
     public void Create(string groupName)
     {
         StartCoroutine(MakeGroup(groupName));
@@ -18,15 +19,17 @@ public class GroupManagement : MonoBehaviour
     {
         StartCoroutine(DeleteGroup(groupId));
     }
-
     public void Join(string groupId)
     {
         StartCoroutine(JoinGroup(groupId));
     }
-
     public void AddMember(string username)
     {
         StartCoroutine(GetMember(username));
+    }
+    public void Leave()
+    {
+        StartCoroutine(LeaveGroup());
     }
 
     private IEnumerator MakeGroup(string groupName)
@@ -50,7 +53,6 @@ public class GroupManagement : MonoBehaviour
             }
         }
     }
-
     private IEnumerator DeleteGroup(string groupId)
     {
         WWWForm form = new WWWForm();
@@ -72,7 +74,6 @@ public class GroupManagement : MonoBehaviour
             }
         }
     }
-
     private IEnumerator JoinGroup(string groupId)
     {
         WWWForm form = new WWWForm();
@@ -94,7 +95,6 @@ public class GroupManagement : MonoBehaviour
             }
         }
     }
-
     private IEnumerator AddGroupMember(string userId)
     {
         WWWForm form = new WWWForm();
@@ -116,7 +116,6 @@ public class GroupManagement : MonoBehaviour
             }
         }
     }
-
     private IEnumerator GetMember(string username)
     {
         WWWForm form = new WWWForm();
@@ -138,6 +137,26 @@ public class GroupManagement : MonoBehaviour
             }
         }
         
+    }
+    private IEnumerator LeaveGroup()
+    {
+        WWWForm form = new WWWForm();
+
+        form.AddField("jwt", this.jwt);
+
+        using (UnityWebRequest www = UnityWebRequest.Post(url + "leave-group.php", form))
+        {
+            yield return www.SendWebRequest();
+
+            if (www.isNetworkError || www.isHttpError)
+            {
+                Debug.Log(www.error);
+            }
+            else
+            {
+                Debug.Log("Group left.");
+            }
+        }
     }
 
 

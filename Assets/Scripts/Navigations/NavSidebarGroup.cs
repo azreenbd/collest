@@ -8,7 +8,9 @@ public class NavSidebarGroup : MonoBehaviour
     GroupManagement groupManager;
 
     public UserData userData;
-    public GameObject panelGroup, panelNoGroup, panelSubGroup, panelCreateGroup, panelEditGroup, panelJoinGroup, panelAddMember, btnEditGroup;
+    public GameObject panelGroup, panelNoGroup, panelSubGroup, panelCreateGroup, 
+        panelEditGroup, panelJoinGroup, panelAddMember, 
+        btnEditGroup, btnLeaveGroup;
 
     public TMP_InputField inputGroupNameCreate, inputGroupNameEdit, inputGroupIdJoin, inputUsernameAdd;
     public TMP_Text textGroupName;
@@ -22,6 +24,7 @@ public class NavSidebarGroup : MonoBehaviour
         groupManager = GetComponent<GroupManagement>();
 
         btnEditGroup.gameObject.SetActive(false);
+        btnLeaveGroup.gameObject.SetActive(false);
     }
 
     // can remove later, cause group are not suppose to appear on start, so UserData have time to assign data
@@ -38,6 +41,12 @@ public class NavSidebarGroup : MonoBehaviour
         if(isCreator)
         {
             btnEditGroup.gameObject.SetActive(true);
+            btnLeaveGroup.gameObject.SetActive(false);
+        }
+        else
+        {
+            btnEditGroup.gameObject.SetActive(false);
+            btnLeaveGroup.gameObject.SetActive(true);
         }
     }
 
@@ -120,6 +129,17 @@ public class NavSidebarGroup : MonoBehaviour
         // DO group deletion here!!!
         groupManager.Disband(userData.user.group.id);
 
+
+        // display no group message
+        panelSubGroup.gameObject.SetActive(false);
+        panelGroup.gameObject.SetActive(false);
+        panelNoGroup.gameObject.SetActive(true);
+    }
+
+    public void LeaveGroupClick()
+    {
+        // DO group deletion here!!!
+        groupManager.Leave();
 
         // display no group message
         panelSubGroup.gameObject.SetActive(false);

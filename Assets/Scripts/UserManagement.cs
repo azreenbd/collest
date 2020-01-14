@@ -11,6 +11,9 @@ using UnityEngine.SceneManagement;
 public class UserManagement : MonoBehaviour
 {
     #region Variables Declaration
+    // retrieve base url from API class
+    private string url = API.url;
+
     private WebToken jwt = new WebToken();
 
     // logged in user jwt
@@ -77,7 +80,6 @@ public class UserManagement : MonoBehaviour
             return false;
         }
     }
-
     private IEnumerator UserAuth(string email, string password)
     {
         WWWForm form = new WWWForm();
@@ -86,7 +88,7 @@ public class UserManagement : MonoBehaviour
         form.AddField("email", email);
         form.AddField("password", password);
 
-        using (UnityWebRequest www = UnityWebRequest.Post("http://localhost/testapi/api/login.php", form))
+        using (UnityWebRequest www = UnityWebRequest.Post(url + "login.php", form))
         {
             yield return www.SendWebRequest();
 
@@ -171,7 +173,6 @@ public class UserManagement : MonoBehaviour
             }
         }
     }
-
     private IEnumerator CreateUser(string username, string email, string password)
     {
         WWWForm form = new WWWForm();
@@ -180,7 +181,7 @@ public class UserManagement : MonoBehaviour
         form.AddField("email", email);
         form.AddField("password", password);
 
-        using (UnityWebRequest www = UnityWebRequest.Post("http://localhost/testapi/api/create-user.php", form))
+        using (UnityWebRequest www = UnityWebRequest.Post(url + "create-user.php", form))
         {
             yield return www.SendWebRequest();
 
