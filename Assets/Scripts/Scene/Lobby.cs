@@ -10,16 +10,18 @@ public class Lobby : MonoBehaviour
     string jwt = UserManagement.GetToken();
     public UserData userData;
 
-    public GameObject groupSidebar;
+    public GameObject groupSidebar, inventorySidebar, questSidebar;
+    public GameObject messageBox;
     public TMP_Text textPlayerName;
 
     // Start is called before the first frame update
     void Start()
     {
+        // hide hidden GUI element when scene is launch!!
         groupSidebar.gameObject.SetActive(false);
 
+        messageBox.gameObject.SetActive(false);
 
-        // DO hide hidden GUI element when scene is launch!!
     }
 
     // Update is called once per frame
@@ -28,10 +30,10 @@ public class Lobby : MonoBehaviour
         // Checking for jwt assignment
         // if jwt is not assigned, redirect to login scene
         this.jwt = UserManagement.GetToken();
-        if (string.IsNullOrEmpty(this.jwt))
+        /*if (string.IsNullOrEmpty(this.jwt))
         {
             SceneManager.LoadScene("Login");
-        }
+        }*/
 
         textPlayerName.SetText(userData.user.username);
 

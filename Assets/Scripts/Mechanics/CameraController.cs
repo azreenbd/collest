@@ -4,24 +4,46 @@ using UnityEngine;
 
 public class CameraController : MonoBehaviour
 {
-    float speed = 50f;
-
-
-    // Start is called before the first frame update
-    void Start()
-    {
-    }
+    float mousePosX, mouseLastPosX, speed;
 
     // Update is called once per frame
     void Update()
     {
 
-
-        //transform.Rotate(Vector3.up + Vector3.left * speed * Time.deltaTime);
-
-        if(Input.GetMouseButton(1))
+        // on mouse left click down
+        if (Input.GetMouseButtonDown(1))
         {
+            // get mouse position
+            mousePosX = Input.mousePosition.x;
+        }
 
+        // on mouse left click hold
+        if (Input.GetMouseButton(1))
+        {
+            // if user stop moving mouse, reset initial position
+            if (mouseLastPosX == Input.mousePosition.x)
+            {
+                mousePosX = mouseLastPosX;
+            }
+            else
+            {
+                // if mouse position on x axis move
+                if (mousePosX < Input.mousePosition.x)
+                {
+                    speed = Input.mousePosition.x - mousePosX;
+                    // rotate right
+                    transform.Rotate(Vector3.up, speed * Time.deltaTime, Space.World);
+                }
+                else if (mousePosX > Input.mousePosition.x)
+                {
+                    speed = mousePosX - Input.mousePosition.x;
+                    // rotate left
+                    transform.Rotate(Vector3.down, speed * Time.deltaTime, Space.World);
+                }
+            }
+            
+            // get previous mouse position
+            mouseLastPosX = Input.mousePosition.x;
         }
     }
 }
