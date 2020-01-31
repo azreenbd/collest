@@ -37,6 +37,12 @@ public class PlayerController : NetworkBehaviour
         
     }
 
+    public override void OnStartLocalPlayer()
+    {
+        base.OnStartLocalPlayer();
+        gameObject.name = "Local";
+    }
+
     [Command]
     void CmdMove(Vector3 location)
     {
