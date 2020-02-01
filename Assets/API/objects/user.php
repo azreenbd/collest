@@ -185,6 +185,29 @@ class User{
         return false;
     }
 
+    function leaveGroup() {
+        // insert query
+        $query = "UPDATE " . $this->table_name . " 
+                SET groupId = NULL 
+                WHERE playerId = :id";
+     
+        // prepare the query
+        $stmt = $this->conn->prepare($query);
+     
+        // sanitize
+        $this->id = htmlspecialchars(strip_tags($this->id));
+     
+        // bind the values
+        $stmt->bindParam(':id', $this->id);
+     
+        // execute the query, also check if query was successful
+        if($stmt->execute()){
+            return true;
+        }
+     
+        return false;
+    }
+
     function hasGroup() {
         $query = "SELECT groupId
                 FROM " . $this->table_name . "

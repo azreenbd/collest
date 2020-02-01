@@ -12,6 +12,7 @@ public class Lobby : MonoBehaviour
 
     public GameObject groupSidebar, inventorySidebar, questSidebar;
     public GameObject messageBox;
+    public GameObject panelQuest;
     public TMP_Text textPlayerName;
 
     // Start is called before the first frame update
@@ -21,6 +22,7 @@ public class Lobby : MonoBehaviour
         groupSidebar.gameObject.SetActive(false);
 
         messageBox.gameObject.SetActive(false);
+        panelQuest.gameObject.SetActive(false);
 
     }
 
