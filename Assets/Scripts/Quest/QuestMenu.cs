@@ -57,7 +57,7 @@ public class QuestMenu : NetworkBehaviour
             Destroy(controlHintUIActive);
 
             // assign accept button functionality
-            btnAccept.onClick.AddListener(() => Accept());
+            btnAccept.onClick.AddListener( () => Accept(questId) );
 
             // set text before showing quest window
             textTitle.SetText(quest.title);
@@ -75,12 +75,31 @@ public class QuestMenu : NetworkBehaviour
         }
     }
 
-    private void Accept()
+    public void Accept(string questId)
     {
-        questManager.Accept(questId);
+        StartCoroutine(StartQuest(questId, UserManagement.GetToken()));
+    }
 
-        // hide quest window
-        panelQuest.gameObject.SetActive(false);
+    private IEnumerator StartQuest(string questId, string jwt)
+    {
+        WWWForm form = new WWWForm();
+
+        form.AddField("questId", questId);
+        form.AddField("jwt", jwt);
+
+        using (UnityWebRequest www = UnityWebRequest.Post(url + "start-quest.php", form))
+        {
+            yield return www.SendWebRequest();
+
+            if (www.isNetworkError || www.isHttpError)
+            {
+                Debug.Log(www.error);
+            }
+            else
+            {
+                panelQuest.SetActive(false);
+            }
+        }
     }
 
     private void OnTriggerEnter(Collider other)

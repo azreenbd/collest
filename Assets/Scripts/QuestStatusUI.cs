@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class QuestStatusUI : MonoBehaviour
 {
@@ -16,12 +17,12 @@ public class QuestStatusUI : MonoBehaviour
         this.title.SetText(title);
     }
 
-    public void SetTask(Task[] tasks, InventoryItem[] items)
+    public void SetTask(Quest quest, InventoryItem[] items, string groupId)
     {
         int totalTask = 0;
         int totalTaskDone = 0;
 
-        foreach(Task t in tasks)
+        foreach(Task t in quest.tasks)
         {
             this.textTask.SetText(t.task);
             GameObject taskbox = Instantiate(task) as GameObject;
@@ -30,29 +31,37 @@ public class QuestStatusUI : MonoBehaviour
 
             totalTask++;
 
-            foreach (InventoryItem iI in items)
+            if(items != null)
             {
-                if(iI.itemId == t.itemId && iI.amount >= t.itemAmount)
+                foreach (InventoryItem iI in items)
                 {
-                    GameObject checkmark = Instantiate(tick) as GameObject;
-                    checkmark.SetActive(true);
-                    checkmark.transform.SetParent(taskbox.transform, false);
+                    if (iI.itemId == t.itemId && iI.amount >= t.itemAmount)
+                    {
+                        GameObject checkmark = Instantiate(tick) as GameObject;
+                        checkmark.SetActive(true);
+                        checkmark.transform.SetParent(taskbox.transform, false);
 
-                    totalTaskDone++;
+                        totalTaskDone++;
+                    }
                 }
             }
         }
 
         if (totalTask == totalTaskDone)
         {
-            Debug.Log(this.title.text);
-
             GameObject doneBtn = Instantiate(btnDone) as GameObject;
             doneBtn.SetActive(true);
             doneBtn.transform.SetParent(btnDone.transform.parent, false);
+
+            doneBtn.GetComponent<Button>().onClick.AddListener( () => BtnDoneClick(groupId, quest.id));
         }
 
         task.SetActive(false);
         btnDone.SetActive(false);
+    }
+
+    public void BtnDoneClick(string groupId, string questId)
+    {
+        Debug.Log("g: " + groupId + " q: " + questId);
     }
 }

@@ -1,50 +1,51 @@
 --Drop all table
-ALTER TABLE Player
+ALTER TABLE player
 DROP CONSTRAINT player_fk;
-ALTER TABLE Team
+ALTER TABLE team
 DROP CONSTRAINT team_fk;
-ALTER TABLE Quest
+ALTER TABLE quest
 DROP CONSTRAINT quest_fk;
 
-DROP TABLE Player;
-DROP TABLE Team;
-DROP TABLE NPC;
-DROP TABLE Quest;
-DROP TABLE GroupQuest;
-DROP TABLE Task;
-DROP TABLE Item;
-DROP TABLE Inventory;
+DROP TABLE player;
+DROP TABLE team;
+DROP TABLE npc;
+DROP TABLE quest;
+DROP TABLE groupquest;
+DROP TABLE task;
+DROP TABLE item;
+DROP TABLE inventory;
 
 --Create table
-CREATE TABLE Player
+CREATE TABLE player
 (
 	playerId int NOT NULL AUTO_INCREMENT,
-	username varchar(80) NOT NULL UNIQUE,
-	email varchar(255) NOT NULL UNIQUE,
+	username varchar(80) NOT NULL,
+	email varchar(255) NOT NULL,
 	password varchar(255) NOT NULL,
 	dateRegistered date NOT NULL,
 	xp int DEFAULT 0 NOT NULL,
+	coin int DEFAULT 0 NOT NULL,
 	groupId int,
 
 	CONSTRAINT player_pk PRIMARY KEY (playerId)
 );
 
-CREATE TABLE Team
+CREATE TABLE team
 (
 	groupId int NOT NULL AUTO_INCREMENT,
 	name varchar(80) NOT NULL,
-	creator int NOT NULL UNIQUE,
+	creator int NOT NULL,
 	point int DEFAULT 0 NOT NULL,
 
 	CONSTRAINT team_pk PRIMARY KEY (groupId) 
 );
 
-ALTER TABLE Player 
-ADD CONSTRAINT player_fk FOREIGN KEY (groupId) REFERENCES Team(groupId);
-ALTER TABLE Team 
-ADD CONSTRAINT team_fk FOREIGN KEY (creator) REFERENCES Player(playerId);
+ALTER TABLE player 
+ADD CONSTRAINT player_fk FOREIGN KEY (groupId) REFERENCES team(groupId) ON DELETE SET NULL;
+ALTER TABLE team 
+ADD CONSTRAINT team_fk FOREIGN KEY (creator) REFERENCES player(playerId) ON DELETE CASCADE;
 
-CREATE TABLE NPC
+CREATE TABLE npc
 (
 	npcId int NOT NULL AUTO_INCREMENT,
 	name varchar(80) NOT NULL,
@@ -52,9 +53,10 @@ CREATE TABLE NPC
 	CONSTRAINT npc_pk PRIMARY KEY (npcId)
 );
 
-CREATE TABLE Quest
+CREATE TABLE quest
 (
 	questId int NOT NULL AUTO_INCREMENT,
+	title varchar(255) NOT NULL,
 	description varchar(255) NOT NULL,
 	topic varchar(80),
 	reward int NOT NULL,
@@ -62,49 +64,52 @@ CREATE TABLE Quest
 	npc int NOT NULL,
 
 	CONSTRAINT quest_pk PRIMARY KEY (questId),
-	CONSTRAINT quest_fk FOREIGN KEY (npc) REFERENCES NPC(npcId)
+	CONSTRAINT quest_fk FOREIGN KEY (npc) REFERENCES npc(npcId) ON DELETE SET NULL
 );
 
-CREATE TABLE GroupQuest
+CREATE TABLE groupquest
 (
 	groupQuestId int NOT NULL AUTO_INCREMENT,
 	groupId int NOT NULL,
 	questId int NOT NULL,
-	progress int NOT NULL,
 	isComplete boolean DEFAULT false NOT NULL,
 
 	CONSTRAINT GroupQuest_pk PRIMARY KEY (groupQuestId),
-	CONSTRAINT GroupQuest_fk1 FOREIGN KEY (groupId) REFERENCES Team(groupId),
-	CONSTRAINT GroupQuest_fk2 FOREIGN KEY (questId) REFERENCES Quest(questId)
+	CONSTRAINT GroupQuest_fk1 FOREIGN KEY (groupId) REFERENCES team(groupId) ON DELETE CASCADE,
+	CONSTRAINT GroupQuest_fk2 FOREIGN KEY (questId) REFERENCES quest(questId) ON DELETE CASCADE
 );
 
-CREATE TABLE Task
+CREATE TABLE task
 (
 	taskId int NOT NULL AUTO_INCREMENT,
 	questId int NOT NULL,
 	task varchar(255) NOT NULL,
+	hint varchar(255),
+	itemId char(5) NOT NULL,
+	itemAmount int DEFAULT 1 NOT NULL,
 
 	CONSTRAINT task_pk PRIMARY KEY (taskId),
-	CONSTRAINT task_fk FOREIGN KEY (questId) REFERENCES Quest(questId)
+	CONSTRAINT task_fk1 FOREIGN KEY (questId) REFERENCES quest(questId) ON DELETE CASCADE,
+	CONSTRAINT task_fk2 FOREIGN KEY (itemId) REFERENCES item(itemId) ON DELETE CASCADE
 );
 
-CREATE TABLE Item
+CREATE TABLE item
 (
-	itemId int NOT NULL AUTO_INCREMENT,
+	itemId char(5) NOT NULL,
 	name varchar(128) NOT NULL,
 	price decimal(6,2) DEFAULT 0,
 
 	CONSTRAINT item_pk PRIMARY KEY (itemId)
 );
 
-CREATE TABLE Inventory
+CREATE TABLE inventory
 (
 	inventoryId int NOT NULL AUTO_INCREMENT,
 	playerId int NOT NULL,
-	itemId int NOT NULL,
+	itemId char(5) NOT NULL,
 	amount int NOT NULL,
 
 	CONSTRAINT inventory_pk PRIMARY KEY (inventoryId),
-	CONSTRAINT inventory_fk1 FOREIGN KEY (playerId) REFERENCES Player(playerId),
-	CONSTRAINT inventory_fk2 FOREIGN KEY (itemId) REFERENCES Item(itemId)
+	CONSTRAINT inventory_fk1 FOREIGN KEY (playerId) REFERENCES player(playerId) ON DELETE CASCADE,
+	CONSTRAINT inventory_fk2 FOREIGN KEY (itemId) REFERENCES item(itemId) ON DELETE CASCADE
 );

@@ -17,6 +17,8 @@ public class QuestTracker : MonoBehaviour
 
     List<GameObject> questInfo = new List<GameObject>();
 
+    int totalQuest = 0;
+
     string url = API.url;
 
     // Start is called before the first frame update
@@ -45,28 +47,33 @@ public class QuestTracker : MonoBehaviour
 
     void ListQuest()
     {
-        foreach (GameObject qI in questInfo) {
-            Destroy(qI);
-        }
-
-        questInfo.Clear();
-
-        foreach (GroupQuest quest in quests)
-        {
-            if(!quest.isComplete)
+        //if(quests.Length > totalQuest)
+        //{
+            foreach (GameObject qI in questInfo)
             {
-                questInfo.Add(Instantiate(questInfoPrefab) as GameObject);
-
-                int index = questInfo.Count - 1;
-
-                questInfo[index].SetActive(true);
-
-                questInfo[index].GetComponent<QuestStatusUI>().SetTitle(quest.quest.title);
-                questInfo[index].GetComponent<QuestStatusUI>().SetTask(quest.quest.tasks, groupItems);
-
-                questInfo[index].transform.SetParent(questInfoPrefab.transform.parent, false);
+                Destroy(qI);
             }
-        }
+
+            questInfo.Clear();
+
+            foreach (GroupQuest quest in quests)
+            {
+                if (!quest.isComplete)
+                {
+                    questInfo.Add(Instantiate(questInfoPrefab) as GameObject);
+
+                    int index = questInfo.Count - 1;
+
+                    questInfo[index].SetActive(true);
+                    questInfo[index].GetComponent<QuestStatusUI>().SetTitle(quest.quest.title);
+                    questInfo[index].GetComponent<QuestStatusUI>().SetTask(quest.quest, groupItems, userData.user.group.id);
+
+                    questInfo[index].transform.SetParent(questInfoPrefab.transform.parent, false);
+                }
+            }
+        //}
+
+        totalQuest = quests.Length;
 
         questInfoPrefab.SetActive(false);
     }
@@ -88,8 +95,6 @@ public class QuestTracker : MonoBehaviour
 
             if (www.isNetworkError || www.isHttpError)
             {
-                Debug.Log(www.error);
-
                 panelQuestList.gameObject.SetActive(false);
                 panelNoQuest.gameObject.SetActive(true);
             }
@@ -124,7 +129,7 @@ public class QuestTracker : MonoBehaviour
 
             if (www.isNetworkError || www.isHttpError)
             {
-                Debug.Log(www.error);
+                groupItems = null;
             }
             else
             {
