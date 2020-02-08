@@ -3,5 +3,7 @@
 [System.Serializable]
 public class GroupQuest
 {
-    public Quest[] quests;
+    public int groupQuestId;
+    public Quest quest;
+    public bool isComplete;
 }

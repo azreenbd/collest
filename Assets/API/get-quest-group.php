@@ -39,8 +39,8 @@ elseif (!empty($_POST["groupId"])) {
 	$groupquest->groupId = $_POST["groupId"];
 }
 
+$jsonPrep = [];
 $json = [];
-$quests = [];
 
 $arr = $groupquest->getQuest();
 
@@ -75,7 +75,8 @@ if(!empty($arr)) {
 			
 		}
 
-		array_push($json, array(
+		$quests = [];
+		$quests = array(
 			"id" => $quest->id,
 		    "title" => $quest->title,
 		    "description" => $quest->description,
@@ -84,14 +85,20 @@ if(!empty($arr)) {
 		    "level" => $quest->level,
 		    "npc" => $quest->npc,
 			"tasks" => $tasksJson
+		);
+
+		array_push($jsonPrep, array( 
+			"groupQuestId" => $i['groupQuestId'],
+			"quest" => $quests ,
+			"isComplete" => $i['isComplete']
 		));
 	}
 
-	$quests = array( "quests" => $json );
+	$json = array( "groupQuests" => $jsonPrep );
 
 	http_response_code(200);
 
-	echo json_encode($quests);
+	echo json_encode($json);
 }
 else {
 	http_response_code(401);

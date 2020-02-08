@@ -12,7 +12,7 @@ public class QuestTracker : MonoBehaviour
     public GameObject panelQuestList, panelNoQuest;
     public UserData userData;
 
-    private Quest[] quests;
+    private GroupQuest[] quests;
     private InventoryItem[] groupItems;
 
     List<GameObject> questInfo = new List<GameObject>();
@@ -51,18 +51,21 @@ public class QuestTracker : MonoBehaviour
 
         questInfo.Clear();
 
-        foreach (Quest quest in quests)
+        foreach (GroupQuest quest in quests)
         {
-            questInfo.Add( Instantiate(questInfoPrefab) as GameObject );
+            if(!quest.isComplete)
+            {
+                questInfo.Add(Instantiate(questInfoPrefab) as GameObject);
 
-            int index = questInfo.Count - 1;
+                int index = questInfo.Count - 1;
 
-            questInfo[index].SetActive(true);
+                questInfo[index].SetActive(true);
 
-            questInfo[index].GetComponent<QuestStatusUI>().SetTitle(quest.title);
-            questInfo[index].GetComponent<QuestStatusUI>().SetTask(quest.tasks, groupItems);
+                questInfo[index].GetComponent<QuestStatusUI>().SetTitle(quest.quest.title);
+                questInfo[index].GetComponent<QuestStatusUI>().SetTask(quest.quest.tasks, groupItems);
 
-            questInfo[index].transform.SetParent(questInfoPrefab.transform.parent, false);
+                questInfo[index].transform.SetParent(questInfoPrefab.transform.parent, false);
+            }
         }
 
         questInfoPrefab.SetActive(false);
@@ -95,9 +98,9 @@ public class QuestTracker : MonoBehaviour
                 panelQuestList.gameObject.SetActive(true);
                 panelNoQuest.gameObject.SetActive(false);
 
-                GroupQuest groupQuest = JsonUtility.FromJson<GroupQuest>(www.downloadHandler.text);
+                GroupQuests groupQuests = JsonUtility.FromJson<GroupQuests>(www.downloadHandler.text);
 
-                quests = groupQuest.quests;
+                quests = groupQuests.groupQuests;
 
                 ListQuest();
             }
