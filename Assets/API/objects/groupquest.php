@@ -43,4 +43,29 @@ class GroupQuest{
         return false;
     }
 
+    function getQuest() {
+        // query to check if email exists
+        $query = "SELECT * FROM " . $this->table_name . " WHERE groupId = " . $this->groupId . " AND isComplete = false";
+
+        // prepare the query
+        $stmt = $this->conn->prepare( $query );
+     
+        // execute the query
+        $stmt->execute();
+     
+        // get number of rows
+        $num = $stmt->rowCount();
+     
+        // if email exists, assign values to object properties for easy access and use for php sessions
+        if($num>0){
+     
+            // get record details / values
+            $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            
+            return $rows;
+        }
+
+        return null;
+    }
+
 }

@@ -20,6 +20,7 @@ public class Lobby : MonoBehaviour
     {
         // hide hidden GUI element when scene is launch!!
         groupSidebar.gameObject.SetActive(false);
+        questSidebar.gameObject.SetActive(false);
 
         messageBox.gameObject.SetActive(false);
         panelQuest.gameObject.SetActive(false);

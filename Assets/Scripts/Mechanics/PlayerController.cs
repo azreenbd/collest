@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.EventSystems;
 using UnityEngine.Networking;
 
 public class PlayerController : NetworkBehaviour
@@ -21,7 +22,8 @@ public class PlayerController : NetworkBehaviour
     {
         if (isLocalPlayer)
         {
-            if (Input.GetMouseButtonDown(0))
+            // if click and not at GUI element
+            if (Input.GetMouseButtonDown(0) && !EventSystem.current.IsPointerOverGameObject())
             {
                 // move on local device
                 Ray ray = cam.ScreenPointToRay(Input.mousePosition);

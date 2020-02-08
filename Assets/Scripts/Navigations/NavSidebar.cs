@@ -18,6 +18,8 @@ public class NavSidebar : MonoBehaviour
     public void showGroupClick()
     {
         panelGroup.gameObject.SetActive(true);
+        panelQuest.gameObject.SetActive(false);
+
         if (string.IsNullOrEmpty(userData.user.group.id))
         {
             panelNoGroup.gameObject.SetActive(true);
@@ -30,6 +32,12 @@ public class NavSidebar : MonoBehaviour
             panelHasGroup.gameObject.SetActive(true);
             panelSubGroup.gameObject.SetActive(false);
         }
+    }
+
+    public void showQuestClick()
+    {
+        panelQuest.gameObject.SetActive(true);
+        panelGroup.gameObject.SetActive(false);
     }
 
 }

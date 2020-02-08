@@ -77,6 +77,7 @@ if($jwt) {
                   "email" => $user->email,
                   "date" => $user->date,
                   "xp" => $user->xp,
+                  "coin" => $user->coin,
                   "group" => array(
                       "id" => $group->id,
                       "name" => $group->name,
@@ -98,6 +99,7 @@ if($jwt) {
                   "email" => $user->email,
                   "date" => $user->date,
                   "xp" => $user->xp,
+                  "coin" => $user->coin,
                   "group" => NULL
                )
             );

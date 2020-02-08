@@ -86,8 +86,9 @@ public class QuestMenu : NetworkBehaviour
     private void OnTriggerEnter(Collider other)
     {
         // when collide with local player
-        if (other.name == player.name)
+        if (other.name == player.name && !String.IsNullOrEmpty(userData.user.group.id)) //userData.user.group == null
         {
+            Debug.Log(userData.user.group.id);
             controlHintUIActive = Instantiate(controlHintUI, FindObjectOfType<Canvas>().transform);
             inRadius = true;
         }
@@ -128,7 +129,7 @@ public class QuestMenu : NetworkBehaviour
                 quest = JsonUtility.FromJson<Quest>(www.downloadHandler.text);
                 //tasks = quest.tasks;
 
-                Debug.Log(quest.title + "\n" + quest.tasks[0].task + "\n" + quest.tasks[0].hint);
+                //Debug.Log(quest.title + "\n" + quest.tasks[0].task + "\n" + quest.tasks[0].hint);
             }
         }
     }

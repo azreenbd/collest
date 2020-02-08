@@ -5,10 +5,24 @@ using UnityEngine;
 public class CameraController : MonoBehaviour
 {
     float mousePosX, mouseLastPosX, speed;
+    private Vector3 offset;
+    GameObject player;
+
+    void LateUpdate()
+    {
+        // camera follow local player avatar
+        if(player)
+        {
+            this.transform.position = player.transform.position;
+        }
+        
+    }
 
     // Update is called once per frame
     void Update()
     {
+        // find local player avatar
+        player = GameObject.Find("Local");
 
         // on mouse left click down
         if (Input.GetMouseButtonDown(1))

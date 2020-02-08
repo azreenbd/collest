@@ -58,6 +58,7 @@ if($user->emailExists() || $user->usernameExists()) {
         "email" => $user->email,
         "date" => $user->date,
         "xp" => $user->xp,
+        "coin" => $user->coin,
         "group" => array(
             "id" => $group->id,
             "name" => $group->name,
@@ -73,6 +74,7 @@ if($user->emailExists() || $user->usernameExists()) {
         "email" => $user->email,
         "date" => $user->date,
         "xp" => $user->xp,
+        "coin" => $user->coin,
         "group" => NULL
       );
   }

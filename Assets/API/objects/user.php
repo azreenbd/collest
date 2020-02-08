@@ -20,6 +20,7 @@ class User{
     public $password;
     public $date;
     public $xp;
+    public $coin;
     public $group;
  
     // constructor
@@ -104,6 +105,7 @@ class User{
 	        $this->password = $row['password'];
             $this->date = $row['dateRegistered'];
             $this->xp = $row['xp'];
+            $this->coin = $row['coin'];
             $this->group = $row['groupId'];
 	 
 	        // return true because email exists in the database
@@ -150,6 +152,7 @@ class User{
             $this->password = $row['password'];
             $this->date = $row['dateRegistered'];
             $this->xp = $row['xp'];
+            $this->coin = $row['coin'];
             $this->group = $row['groupId'];
      
             // return true because email exists in the database

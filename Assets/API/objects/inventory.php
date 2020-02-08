@@ -100,5 +100,36 @@ class Inventory{
         }
     }
 
+    function getInventoryGroup($groupId) {
+    	//sanitize
+    	$groupId = htmlspecialchars(strip_tags($groupId));
+
+    	//query
+    	$query = "SELECT inventory.itemId, SUM(inventory.amount) AS 'amount' FROM inventory
+		    	WHERE inventory.playerId IN 
+		    	(SELECT playerId
+				FROM player
+				WHERE groupId = " . $groupId . ") 
+				GROUP BY inventory.itemId";
+
+		// prepare the query
+        $stmt = $this->conn->prepare( $query );
+
+        // execute the query
+        $stmt->execute();
+
+        // get number of rows
+        $num = $stmt->rowCount();
+     
+        // if email exists, assign values to object properties for easy access and use for php sessions
+        if($num>0){
+     
+            // get record details / values
+            $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            
+            return $rows;
+        }
+    }
+
 
 }

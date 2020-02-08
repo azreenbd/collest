@@ -38,8 +38,6 @@ class Item{
             return $rows;
         }
      
-        // return false if email does not exist in the database
-        //return false;
     }
 
     function getItem() {
