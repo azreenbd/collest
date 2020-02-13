@@ -11,7 +11,7 @@ public class UserData : MonoBehaviour
     public TMP_Text debug;
 
     // user data is stored here
-    public User user;
+    public User user = null;
 
     // is user data assigned?
     bool isAvailable = false;
@@ -24,6 +24,8 @@ public class UserData : MonoBehaviour
     // for json response serialization
     ValidateUser response = new ValidateUser();
     private WebToken newToken = new WebToken();
+
+    int numOfError = 0;
     
 
     // Start is called before the first frame update
@@ -31,6 +33,9 @@ public class UserData : MonoBehaviour
     {
         if (!string.IsNullOrEmpty(this.jwt))
         {
+            // retrieve new jwt
+            RefreshUser();
+            // retrieve user data from jwt
             GetUser();
         }
     }
@@ -42,13 +47,13 @@ public class UserData : MonoBehaviour
         this.jwt = UserManagement.GetToken();
 
         // refresh user data to check for real time change
-        if (!string.IsNullOrEmpty(this.jwt))
+        /*if (!string.IsNullOrEmpty(this.jwt))
         {
             // retrieve new jwt
             RefreshUser();
             // retrieve user data from jwt
             GetUser();
-        }
+        }*/
 
         // if data is assigned
         if (isAvailable)
@@ -56,69 +61,79 @@ public class UserData : MonoBehaviour
             user = response.data;
 
             // show user data
-            debug.SetText("id: " + user.id
+            /*debug.SetText("id: " + user.id
                         + "\nun:" + user.username
                         + "\nemail:" + user.email
                         + "\ndate:" + user.date
                         + "\nxp:" + user.xp
-                        + "\ngroup:" + user.group.name);
+                        + "\ngroup:" + user.group.name);*/
         }
     }
     void RefreshUser()
     {
-        StartCoroutine(RefreshToken(this.jwt));
+        StartCoroutine(RefreshToken());
     }
 
     void GetUser()
     {
-        StartCoroutine(DecryptData(this.jwt));
+        StartCoroutine(DecryptData());
     }
 
-    private IEnumerator RefreshToken(string jwt)
+    private IEnumerator RefreshToken()
     {
-        WWWForm form = new WWWForm();
+        while (true) {
+            WWWForm form = new WWWForm();
 
-        form.AddField("jwt", jwt);
+            form.AddField("jwt", this.jwt);
 
-        using (UnityWebRequest www = UnityWebRequest.Post(url + "update-token.php", form))
-        {
-            yield return www.SendWebRequest();
-
-            if (www.isNetworkError || www.isHttpError)
+            using (UnityWebRequest www = UnityWebRequest.Post(url + "update-token.php", form))
             {
-                Debug.Log(www.error);
-            }
-            else
-            {
-                newToken = JsonUtility.FromJson<WebToken>(www.downloadHandler.text);
+                yield return www.SendWebRequest();
 
-                UserManagement.SetToken(newToken.jwt);
+                if (www.isNetworkError || www.isHttpError)
+                {
+                    Debug.Log(www.error);
+
+                    numOfError++;
+                    debug.SetText(numOfError.ToString());
+                }
+                else
+                {
+                    newToken = JsonUtility.FromJson<WebToken>(www.downloadHandler.text);
+
+                    UserManagement.SetToken(newToken.jwt);
+                }
             }
         }
     }
-    private IEnumerator DecryptData(string token)
+    private IEnumerator DecryptData()
     {
-        WWWForm form = new WWWForm();
-
-        form.AddField("jwt", token);
-
-        using (UnityWebRequest www = UnityWebRequest.Post(url + "validate-token.php", form))
+        while (true)
         {
-            yield return www.SendWebRequest();
+            WWWForm form = new WWWForm();
 
-            if (www.isNetworkError || www.isHttpError)
+            form.AddField("jwt", this.jwt);
+
+            using (UnityWebRequest www = UnityWebRequest.Post(url + "validate-token.php", form))
             {
-                Debug.Log(www.error);
+                yield return www.SendWebRequest();
 
-                // the jwt is invalid, so user need to login again to get a new jwt
-                SceneManager.LoadScene("Login");
-            }
-            else
-            {
-                // assign all user data
-                response = JsonUtility.FromJson<ValidateUser>(www.downloadHandler.text);
+                if (www.isNetworkError || www.isHttpError)
+                {
+                    Debug.Log(www.error);
 
-                isAvailable = true;
+                    // the jwt is invalid, so user need to login again to get a new jwt
+                    //SceneManager.LoadScene("Login");
+                    numOfError++;
+                    debug.SetText(numOfError.ToString());
+                }
+                else
+                {
+                    // assign all user data
+                    response = JsonUtility.FromJson<ValidateUser>(www.downloadHandler.text);
+
+                    isAvailable = true;
+                }
             }
         }
     }

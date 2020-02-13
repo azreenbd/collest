@@ -68,4 +68,29 @@ class GroupQuest{
         return null;
     }
 
+    function isComplete() {
+        // insert query
+        $query = "UPDATE " . $this->table_name . "
+                SET isComplete = true
+                WHERE groupId = :groupId AND questId = :questId";
+     
+        // prepare the query
+        $stmt = $this->conn->prepare($query);
+     
+        // sanitize
+        $this->groupId = htmlspecialchars(strip_tags($this->groupId));
+        $this->questId = htmlspecialchars(strip_tags($this->questId));
+     
+        // bind the values
+        $stmt->bindParam(':groupId', $this->groupId);
+        $stmt->bindParam(':questId', $this->questId);
+     
+        // execute the query, also check if query was successful
+        if($stmt->execute()){
+            return true;
+        }
+     
+        return false;
+    }
+
 }

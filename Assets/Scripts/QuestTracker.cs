@@ -18,6 +18,7 @@ public class QuestTracker : MonoBehaviour
     List<GameObject> questInfo = new List<GameObject>();
 
     int totalQuest = 0;
+    int totalQuestOld = 0;
 
     string url = API.url;
 
@@ -26,29 +27,27 @@ public class QuestTracker : MonoBehaviour
     {
         panelQuestList.gameObject.SetActive(false);
         panelNoQuest.gameObject.SetActive(false);
+
+        /*RetrieveGroupInventory();
+        RetrieveGroupQuest();*/
     }
 
-    // Update is called once per frame
-    void Update()
+    void OnDisable()
     {
+        StopCoroutine(GetGroupInventory());
+        StopCoroutine(GetGroupQuest());
+    }
 
-        if(!String.IsNullOrEmpty( userData.user.group.id ))
-        {
-            RetrieveGroupInventory(userData.user.group.id);
-            RetrieveGroupQuest(userData.user.group.id);
-        }
-        else
-        {
-            panelQuestList.gameObject.SetActive(false);
-            panelNoQuest.gameObject.SetActive(true);
-        }
-        
+    void OnEnable()
+    {
+        StartCoroutine(GetGroupInventory());
+        StartCoroutine(GetGroupQuest());
     }
 
     void ListQuest()
     {
-        //if(quests.Length > totalQuest)
-        //{
+        if (quests.Length > totalQuest)
+        {
             foreach (GameObject qI in questInfo)
             {
                 Destroy(qI);
@@ -71,72 +70,108 @@ public class QuestTracker : MonoBehaviour
                     questInfo[index].transform.SetParent(questInfoPrefab.transform.parent, false);
                 }
             }
-        //}
+        }
+        else
+        {
+            foreach (GameObject qI in questInfo)
+            {
+                //refresh task only
+                qI.GetComponent<QuestStatusUI>().Refresh(groupItems);
+            }
+        }
 
         totalQuest = quests.Length;
 
         questInfoPrefab.SetActive(false);
     }
 
-    public void RetrieveGroupQuest(string groupId)
+    public void RetrieveGroupQuest()
     {
-        StartCoroutine(GetGroupQuest(groupId));
+        StartCoroutine(GetGroupQuest());
     }
 
-    private IEnumerator GetGroupQuest(string groupId)
+    private IEnumerator GetGroupQuest()
     {
-        WWWForm form = new WWWForm();
-
-        form.AddField("groupId", groupId);
-
-        using (UnityWebRequest www = UnityWebRequest.Post(url + "get-quest-group.php", form))
+        while(true)
         {
-            yield return www.SendWebRequest();
+            if (!String.IsNullOrEmpty(userData.user.group.id))
+            {
+                WWWForm form = new WWWForm();
 
-            if (www.isNetworkError || www.isHttpError)
+                form.AddField("groupId", userData.user.group.id);
+
+                using (UnityWebRequest www = UnityWebRequest.Post(url + "get-quest-group.php", form))
+                {
+                    yield return www.SendWebRequest();
+
+                    if (www.isNetworkError || www.isHttpError)
+                    {
+                        panelQuestList.gameObject.SetActive(false);
+                        panelNoQuest.gameObject.SetActive(true);
+                    }
+                    else
+                    {
+                        panelQuestList.gameObject.SetActive(true);
+                        panelNoQuest.gameObject.SetActive(false);
+
+                        GroupQuests groupQuests = JsonUtility.FromJson<GroupQuests>(www.downloadHandler.text);
+
+                        quests = groupQuests.groupQuests;
+
+                        ListQuest();
+                    }
+                }
+            }
+            else
             {
                 panelQuestList.gameObject.SetActive(false);
                 panelNoQuest.gameObject.SetActive(true);
+
+                yield return null;
             }
-            else
-            {
-                panelQuestList.gameObject.SetActive(true);
-                panelNoQuest.gameObject.SetActive(false);
-
-                GroupQuests groupQuests = JsonUtility.FromJson<GroupQuests>(www.downloadHandler.text);
-
-                quests = groupQuests.groupQuests;
-
-                ListQuest();
-            }
+            
         }
     }
 
-    public void RetrieveGroupInventory(string groupId)
+    public void RetrieveGroupInventory()
     {
-        StartCoroutine(GetGroupInventory(groupId));
+        StartCoroutine(GetGroupInventory());
     }
 
-    private IEnumerator GetGroupInventory(string groupId)
+    private IEnumerator GetGroupInventory()
     {
-        WWWForm form = new WWWForm();
-
-        form.AddField("groupId", groupId);
-
-        using (UnityWebRequest www = UnityWebRequest.Post(url + "get-inventory-group.php", form))
+        while(true)
         {
-            yield return www.SendWebRequest();
-
-            if (www.isNetworkError || www.isHttpError)
+            if (!String.IsNullOrEmpty(userData.user.group.id))
             {
-                groupItems = null;
+                WWWForm form = new WWWForm();
+
+                form.AddField("groupId", userData.user.group.id);
+
+                using (UnityWebRequest www = UnityWebRequest.Post(url + "get-inventory-group.php", form))
+                {
+                    yield return www.SendWebRequest();
+
+                    if (www.isNetworkError || www.isHttpError)
+                    {
+                        groupItems = null;
+                    }
+                    else
+                    {
+                        GroupInventory groupInventory = JsonUtility.FromJson<GroupInventory>(www.downloadHandler.text);
+
+                        groupItems = groupInventory.items;
+                    }
+                }
             }
             else
             {
-                GroupInventory groupInventory = JsonUtility.FromJson<GroupInventory>(www.downloadHandler.text);
+                panelQuestList.gameObject.SetActive(false);
+                panelNoQuest.gameObject.SetActive(true);
 
-                groupItems = groupInventory.items;
+                yield return null;
             }
+            
         }
     }
 }

@@ -4,7 +4,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.Networking;
 
-public class RecylingBin : NetworkBehaviour
+public class RecylingBin : MonoBehaviour
 {
     // get user data
     public UserData userData;

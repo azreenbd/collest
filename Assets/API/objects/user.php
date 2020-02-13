@@ -68,6 +68,52 @@ class User{
      
         return false;
     }
+
+    function get() {
+     
+        // query to check if email exists
+        $query = "SELECT *
+                FROM " . $this->table_name . "
+                WHERE playerId = ?
+                LIMIT 0,1";
+     
+        // prepare the query
+        $stmt = $this->conn->prepare( $query );
+     
+        // sanitize
+        $this->id = htmlspecialchars(strip_tags($this->id));
+     
+        // bind given email value
+        $stmt->bindParam(1, $this->id);
+     
+        // execute the query
+        $stmt->execute();
+     
+        // get number of rows
+        $num = $stmt->rowCount();
+     
+        // if email exists, assign values to object properties for easy access and use for php sessions
+        if($num>0){
+     
+            // get record details / values
+            $row = $stmt->fetch(PDO::FETCH_ASSOC);
+     
+            // assign values to object properties
+            $this->id = $row['playerId'];
+            $this->username = $row['username'];
+            $this->password = $row['password'];
+            $this->date = $row['dateRegistered'];
+            $this->xp = $row['xp'];
+            $this->coin = $row['coin'];
+            $this->group = $row['groupId'];
+     
+            // return true because email exists in the database
+            return true;
+        }
+     
+        // return false if email does not exist in the database
+        return false;
+    }
      
     // check if given email exist in the database
 	function emailExists() {
@@ -247,6 +293,29 @@ class User{
                 return false;
             }
         }
+        return false;
+    }
+
+    function deductCoin(int $totalDeduct) {
+        // insert query
+        $query = "UPDATE " . $this->table_name . " 
+                SET coin = coin - " .$totalDeduct. "
+                WHERE playerId = :id";
+     
+        // prepare the query
+        $stmt = $this->conn->prepare($query);
+     
+        // sanitize
+        $this->id = htmlspecialchars(strip_tags($this->id));
+     
+        // bind the values
+        $stmt->bindParam(':id', $this->id);
+     
+        // execute the query, also check if query was successful
+        if($stmt->execute()){
+            return true;
+        }
+     
         return false;
     }
 }

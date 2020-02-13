@@ -6,13 +6,15 @@ using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;
 
-public class QuestMenu : NetworkBehaviour
+public class QuestMenu : MonoBehaviour
 {
     public string questId;
+    bool isDone = false;
 
     // get global data
     public UserData userData;
     public QuestManager questManager;
+    private GroupQuest[] groupQuests;
 
     // retrive base url from API class
     private string url = API.url;
@@ -41,7 +43,14 @@ public class QuestMenu : NetworkBehaviour
     {
         radius = this.GetComponent<Collider>();
 
+        groupQuests = null;
+
         GetQuest(questId);
+
+        //Debug.Log(userData.user.group.id);
+
+        RetrieveGroupQuest();
+        
     }
 
     // Update is called once per frame
@@ -50,8 +59,24 @@ public class QuestMenu : NetworkBehaviour
         // Get local player avatar
         player = GameObject.Find("Local");
 
+        /*if(!String.IsNullOrEmpty( userData.user.group.id ))
+        {
+            RetrieveGroupQuest(userData.user.group.id);
+        }*/
+
+        if(groupQuests != null)
+        {
+            foreach (GroupQuest gQ in groupQuests)
+            {
+                if (gQ.quest.id == questId)
+                {
+                    isDone = true;
+                }
+            }
+        }
+
         // If player in radius and E key is pressed, show quest window
-        if (inRadius && Input.GetKeyDown(KeyCode.E))
+        if (inRadius && Input.GetKeyDown(KeyCode.E) && !isDone)
         {
             // remove E to interact message
             Destroy(controlHintUIActive);
@@ -105,7 +130,7 @@ public class QuestMenu : NetworkBehaviour
     private void OnTriggerEnter(Collider other)
     {
         // when collide with local player
-        if (other.name == player.name && !String.IsNullOrEmpty(userData.user.group.id)) //userData.user.group == null
+        if (other.name == player.name && !String.IsNullOrEmpty(userData.user.group.id) && !isDone) //userData.user.group == null
         {
             Debug.Log(userData.user.group.id);
             controlHintUIActive = Instantiate(controlHintUI, FindObjectOfType<Canvas>().transform);
@@ -149,6 +174,45 @@ public class QuestMenu : NetworkBehaviour
                 //tasks = quest.tasks;
 
                 //Debug.Log(quest.title + "\n" + quest.tasks[0].task + "\n" + quest.tasks[0].hint);
+            }
+        }
+    }
+
+    public void RetrieveGroupQuest()
+    {
+        StartCoroutine(GetGroupQuest());
+    }
+
+    private IEnumerator GetGroupQuest()
+    {
+        while(true)
+        {
+            if (!String.IsNullOrEmpty(userData.user.group.id))
+            {
+                WWWForm form = new WWWForm();
+
+                form.AddField("groupId", userData.user.group.id);
+
+                using (UnityWebRequest www = UnityWebRequest.Post(url + "get-quest-group.php", form))
+                {
+                    yield return www.SendWebRequest();
+
+                    //yield return null;
+
+                    if (www.isNetworkError || www.isHttpError)
+                    {
+                    }
+                    else
+                    {
+                        GroupQuests gQ = JsonUtility.FromJson<GroupQuests>(www.downloadHandler.text);
+
+                        groupQuests = gQ.groupQuests;
+                    }
+                }
+            }
+            else
+            {
+                yield return null;
             }
         }
     }

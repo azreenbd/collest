@@ -100,6 +100,35 @@ class Inventory{
         }
     }
 
+    function getInventory() {
+        //sanitize
+        $this->player = htmlspecialchars(strip_tags($this->player));
+
+        //query
+        $query = "SELECT itemId, amount FROM " .$this->table_name. 
+                " WHERE playerId = :player";
+
+        // prepare the query
+        $stmt = $this->conn->prepare( $query );
+
+        $stmt->bindParam(':player', $this->player);
+
+        // execute the query
+        $stmt->execute();
+
+        // get number of rows
+        $num = $stmt->rowCount();
+     
+        // if email exists, assign values to object properties for easy access and use for php sessions
+        if($num>0){
+     
+            // get record details / values
+            $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            
+            return $rows;
+        }
+    }
+
     function getInventoryGroup($groupId) {
     	//sanitize
     	$groupId = htmlspecialchars(strip_tags($groupId));
@@ -130,6 +159,5 @@ class Inventory{
             return $rows;
         }
     }
-
 
 }
