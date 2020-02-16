@@ -44,13 +44,17 @@ public class CameraController : MonoBehaviour
                 // if mouse position on x axis move
                 if (mousePosX < Input.mousePosition.x)
                 {
-                    speed = Input.mousePosition.x - mousePosX;
+                    //speed = Input.mousePosition.x - mousePosX;
+                    speed = 200f;
+                    //to fix window not rotating fast enough
+
                     // rotate right
                     transform.Rotate(Vector3.up, speed * Time.deltaTime, Space.World);
                 }
                 else if (mousePosX > Input.mousePosition.x)
                 {
-                    speed = mousePosX - Input.mousePosition.x;
+                    //speed = mousePosX - Input.mousePosition.x;
+                    speed = 200f;
                     // rotate left
                     transform.Rotate(Vector3.down, speed * Time.deltaTime, Space.World);
                 }

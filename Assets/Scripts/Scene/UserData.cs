@@ -66,7 +66,8 @@ public class UserData : MonoBehaviour
                         + "\nemail:" + user.email
                         + "\ndate:" + user.date
                         + "\nxp:" + user.xp
-                        + "\ngroup:" + user.group.name);*/
+                        + "\ngroup:" + user.group.name
+                        + "\ncoin:" + user.coin);*/
         }
     }
     void RefreshUser()

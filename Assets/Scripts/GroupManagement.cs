@@ -100,7 +100,7 @@ public class GroupManagement : MonoBehaviour
         WWWForm form = new WWWForm();
 
         form.AddField("id", userId);
-        form.AddField("jwt", this.jwt);
+        form.AddField("jwt", UserManagement.GetToken());
 
         using (UnityWebRequest www = UnityWebRequest.Post(url + "add-member.php", form))
         {

@@ -21,7 +21,7 @@ public class NavSidebarGroup : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        groupManager = GetComponent<GroupManagement>();
+        groupManager = this.GetComponent<GroupManagement>();
 
         btnEditGroup.gameObject.SetActive(false);
         btnLeaveGroup.gameObject.SetActive(false);

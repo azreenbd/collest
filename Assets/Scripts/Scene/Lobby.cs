@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿
+using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -14,6 +15,8 @@ public class Lobby : MonoBehaviour
     public GameObject messageBox;
     public GameObject panelQuest, panelQuestDone;
     public TMP_Text textPlayerName;
+
+    
 
     // Start is called before the first frame update
     void Start()
@@ -50,5 +53,10 @@ public class Lobby : MonoBehaviour
 
         textPlayerName.SetText(userData.user.username);
 
+        // Control to open shop window
+        if(Input.GetKeyDown(KeyCode.S))
+        {
+            shopWindow.gameObject.SetActive(true);
+        }
     }
 }

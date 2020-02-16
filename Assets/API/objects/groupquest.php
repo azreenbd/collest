@@ -45,7 +45,7 @@ class GroupQuest{
 
     function getQuest() {
         // query to check if email exists
-        $query = "SELECT * FROM " . $this->table_name . " WHERE groupId = " . $this->groupId . " AND isComplete = false";
+        $query = "SELECT * FROM " . $this->table_name . " WHERE groupId = " . $this->groupId;
 
         // prepare the query
         $stmt = $this->conn->prepare( $query );
@@ -87,7 +87,20 @@ class GroupQuest{
      
         // execute the query, also check if query was successful
         if($stmt->execute()){
-            return true;
+            // insert query
+            $query = "UPDATE player
+                    SET xp = xp + 100
+                    WHERE groupId = :groupId";
+     
+            // prepare the query
+            $stmt = $this->conn->prepare($query);
+         
+            // bind the values
+            $stmt->bindParam(':groupId', $this->groupId);
+
+            if($stmt->execute()){
+                return true;
+            }
         }
      
         return false;

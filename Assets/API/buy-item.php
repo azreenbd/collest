@@ -45,7 +45,7 @@ if (!empty($data->itemId) && !empty($data->jwt)) {
 }
 elseif (!empty($_POST["itemId"]) && !empty($_POST["jwt"])) {
 	$item->id = $_POST["itemId"];
-	$jwt = $data->jwt;
+	$jwt = $_POST["jwt"];
 }
 else {
 	$jwt = "";
