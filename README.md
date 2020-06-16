@@ -1,4 +1,5 @@
 # Collest
+* Video demo: https://youtu.be/YtJ9H-XyPmk
 ## Installation Instruction
 * Go to `Collest/Assets/DB` and run all the SQL file to your database (preferebaly MySQL).
 * Go to `Collest/Assets/API/config/database.php` and modify the variables to your database information.
